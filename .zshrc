@@ -13,6 +13,7 @@ case $OSTYPE in
 
     darwin*)
         export PROMPT="%{$fg[green]%}%~%{$fg[yellow]%}%# %{$reset_color%}"
+        export PATH=/opt/local/bin:$PATH
         alias sandbox='ssh -A cit@localhost.imvu.com'
         ;;
 esac
