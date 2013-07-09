@@ -8,11 +8,11 @@ autoload -U colors && colors
 
 case $OSTYPE in
     linux*)
-        export PS1="$fg[red]%m $fg[green]%~$fg[cyan]%# $reset_color"
+        export PROMPT="%{$fg[red]%}%m %{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
         ;;
 
     darwin*)
-        export PS1="$fg[green]%~$fg[yellow]%# $reset_color"
+        export PROMPT="%{$fg[green]%}%~%{$fg[yellow]%}%# %{$reset_color%}"
         alias sandbox='ssh -A cit@localhost.imvu.com'
         ;;
 esac
