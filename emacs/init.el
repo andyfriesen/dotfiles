@@ -1,7 +1,14 @@
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(setq config-root (file-name-directory load-file-name))
+
+(add-to-list 'load-path config-root)
+(add-to-list 'load-path (concat config-root "site-lisp"))
+(add-to-list 'load-path (concat config-root "haskell-mode"))
+
+;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
 (require 'flymake-cursor)
+(require 'php-mode)
 
 ;(defun w32-maximize-frame ()
 ;  "Maximize the current frame"
@@ -50,7 +57,7 @@
         (cons "\\.scons$" 'python-mode)
         (cons "SConstruct" 'python-mode)
         (cons "SConscript" 'python-mode)
-        ;(cons "\\.php$" 'php-mode)
+        (cons "\\.php$" 'php-mode)
         (cons "\\.mm$" 'objc-mode)
         (cons "\\.h$" 'c++-mode)
         )
@@ -60,6 +67,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default c-basic-offset 4)
 (setq-default read-buffer-completion-ignore-case t)
+(setq-default read-file-name-completion-ignore-case t)
 (setq-default require-final-newline t)
 (setq-default write-region-inhibit-fsync t)
 
@@ -68,12 +76,21 @@
 (autoload 'js2-mode "js2-mode" "Major mode for editing JavaScript" t)
 ;(autoload 'php-mode "php-mode" "Major mode for editing PHP" t)
 
+(require 'mouse)
+(xterm-mouse-mode t)
+(setq mouse-sel-mode t)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flymake-errline ((t (:foreground "darkred" :underline "red"))))
+ '(default ((t (:height 58 :family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :width normal))))
+ '(diff-added ((t (:inherit diff-changed :foreground "green"))))
+ '(diff-context ((t (:inherit shadow :foreground "brightblue"))))
+ '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
+ '(dired-ignored ((t (:inherit shadow :foreground "brightgreen"))))
+ '(flymake-errline ((t (:foreground "brightred" :underline "red"))))
  '(flymake-warnline ((t (:foreground "magenta" :underline "yellow"))))
  '(font-lock-builtin-face ((t (:foreground "brightmagenta"))))
  '(font-lock-comment-face ((t (:foreground "brightgreen"))))
@@ -82,7 +99,7 @@
  '(font-lock-string-face ((t (:foreground "cyan"))))
  '(font-lock-type-face ((t (:foreground "yellow"))))
  '(font-lock-variable-name-face ((t (:foreground "blue"))))
- '(minibuffer-prompt ((t (:foreground "blue"))))
+ '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
  '(region ((t (:background "brightwhite")))))
 
 (setq-default c-indent-tabs-mode t     ; Pressing TAB should cause indentation
@@ -105,7 +122,6 @@
 (add-hook 'c++-mode-hook 'my-c-mode-hook)
 (add-hook 'ecmascript-mode-hook 'my-c-mode-hook)
 
-(add-to-list 'load-path "~/.emacs.d/haskell-mode")
 (load "haskell-site-file")
 
 (autoload 'ghc-init "ghc" nil t)
@@ -118,6 +134,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
  '(haskell-indent-thenelse 1)
  '(haskell-process-suggest-remove-import-lines t)
@@ -156,6 +173,9 @@
                       nil)) 
                   file-list))))
 
+(require 'haskell-style)
+(add-hook 'haskell-mode-hook 'haskell-style)
+
 ;; From the ghc-mod instructions
 ;(autoload 'ghc-init "ghc" nil t)
 ;; This should replace the call to add-hook from the ghc-mod instructions:
@@ -168,3 +188,5 @@
                                (local-set-key [M-t] 'ghc-insert-template)))
 
 (add-to-list 'completion-ignored-extensions ".hi")
+
+(set-face-attribute 'default nil :height 60)
