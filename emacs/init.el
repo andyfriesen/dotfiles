@@ -62,6 +62,7 @@
         (cons "\\.php$" 'php-mode)
         (cons "\\.mm$" 'objc-mode)
         (cons "\\.h$" 'c++-mode)
+        (cons "\\.tml$" 'html-mode)
         )
        auto-mode-alist))
 
