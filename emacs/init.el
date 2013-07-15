@@ -4,11 +4,13 @@
 (add-to-list 'load-path config-root)
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "haskell-mode"))
-
-;(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(add-to-list 'custom-theme-load-path (concat config-root "themes"))
 
 (require 'flymake-cursor)
 (require 'php-mode)
+
+(when (featurep 'aquamacs)
+  (load-theme 'solarized-dark))
 
 ;(defun w32-maximize-frame ()
 ;  "Maximize the current frame"
@@ -71,36 +73,34 @@
 (setq-default require-final-newline t)
 (setq-default write-region-inhibit-fsync t)
 
-;(autoload 'actionscript-mode "actionscript-mode" "Major mode for editing ActionScript." t)
-;(autoload 'ecmascript-mode "ecmascript-mode" "Major mode for editing ECMAScript" t)
 (autoload 'js2-mode "js2-mode" "Major mode for editing JavaScript" t)
-;(autoload 'php-mode "php-mode" "Major mode for editing PHP" t)
 
 (require 'mouse)
 (xterm-mouse-mode t)
 (setq mouse-sel-mode t)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:height 58 :family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :width normal))))
- '(diff-added ((t (:inherit diff-changed :foreground "green"))))
- '(diff-context ((t (:inherit shadow :foreground "brightblue"))))
- '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
- '(dired-ignored ((t (:inherit shadow :foreground "brightgreen"))))
- '(flymake-errline ((t (:foreground "brightred" :underline "red"))))
- '(flymake-warnline ((t (:foreground "magenta" :underline "yellow"))))
- '(font-lock-builtin-face ((t (:foreground "brightmagenta"))))
- '(font-lock-comment-face ((t (:foreground "brightgreen"))))
- '(font-lock-function-name-face ((t (:foreground "blue"))))
- '(font-lock-keyword-face ((t (:foreground "green"))))
- '(font-lock-string-face ((t (:foreground "cyan"))))
- '(font-lock-type-face ((t (:foreground "yellow"))))
- '(font-lock-variable-name-face ((t (:foreground "blue"))))
- '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
- '(region ((t (:background "brightwhite")))))
+(unless (featurep 'aquamacs)
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(default ((t (:height 58 :family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :width normal))))
+   '(diff-added ((t (:inherit diff-changed :foreground "green"))))
+   '(diff-context ((t (:inherit shadow :foreground "brightblue"))))
+   '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
+   '(dired-ignored ((t (:inherit shadow :foreground "brightgreen"))))
+   '(flymake-errline ((t (:foreground "brightred" :underline "red"))))
+   '(flymake-warnline ((t (:foreground "magenta" :underline "yellow"))))
+   '(font-lock-builtin-face ((t (:foreground "brightmagenta"))))
+   '(font-lock-comment-face ((t (:foreground "brightgreen"))))
+   '(font-lock-function-name-face ((t (:foreground "blue"))))
+   '(font-lock-keyword-face ((t (:foreground "green"))))
+   '(font-lock-string-face ((t (:foreground "cyan"))))
+   '(font-lock-type-face ((t (:foreground "yellow"))))
+   '(font-lock-variable-name-face ((t (:foreground "blue"))))
+   '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
+   '(region ((t (:background "brightwhite"))))))
 
 (setq-default c-indent-tabs-mode t     ; Pressing TAB should cause indentation
               c-indent-level 4         ; A TAB is equivilent to four spaces
