@@ -10,7 +10,7 @@
 (require 'php-mode)
 
 (when (featurep 'aquamacs)
-  (load-theme 'solarized-dark))
+  (load-theme 'solarized-dark t))
 
 ;(defun w32-maximize-frame ()
 ;  "Maximize the current frame"
