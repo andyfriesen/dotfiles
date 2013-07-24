@@ -55,7 +55,6 @@
         ;(cons "\\.as$" 'ecmascript-mode)
         ;(cons "\\.js$" 'ecmascript-mode)
         (cons "\\.as$" 'javascript-mode)
-        (cons "\\.js$" 'js2-mode)
         (cons "\\.scons$" 'python-mode)
         (cons "SConstruct" 'python-mode)
         (cons "SConscript" 'python-mode)
@@ -73,8 +72,6 @@
 (setq-default read-file-name-completion-ignore-case t)
 (setq-default require-final-newline t)
 (setq-default write-region-inhibit-fsync t)
-
-(autoload 'js2-mode "js2-mode" "Major mode for editing JavaScript" t)
 
 (require 'mouse)
 (xterm-mouse-mode t)
