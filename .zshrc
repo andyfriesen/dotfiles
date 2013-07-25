@@ -7,6 +7,7 @@ export LSCOLORS="ex"
 autoload -U colors && colors
 
 SSH_ENV="$HOME/.ssh/environment"
+SCRIPT_SOURCE=${0%/*}
 
 function start_agent {
      echo "Initialising new SSH agent..."
@@ -37,6 +38,8 @@ case $OSTYPE in
 
     linux*)
         export PROMPT="%{$fg[red]%}%m %{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
+        eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
+        alias ls='ls --color'
         ;;
 
     darwin*)
