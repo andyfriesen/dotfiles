@@ -8,6 +8,7 @@
 
 (require 'flymake-cursor)
 (require 'php-mode)
+(require 'erlang)
 
 (when (featurep 'aquamacs)
   (load-theme 'solarized-dark t))
@@ -60,6 +61,7 @@
         (cons "SConscript" 'python-mode)
         (cons "\\.php$" 'php-mode)
         (cons "\\.mm$" 'objc-mode)
+        (cons "\\.erl$" 'erlang-mode)
         (cons "\\.h$" 'c++-mode)
         (cons "\\.tml$" 'html-mode)
         )
