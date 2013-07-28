@@ -2,6 +2,7 @@
 
 set encoding=utf-8
 set fileformat=unix
+set selection=exclusive
 
 let mapleader = ","
 let maplocalleader = "\\"
@@ -130,6 +131,7 @@ map <f2> <esc>:NERDTreeToggle<cr>
 map <f3> <esc>:CtrlPBuffer<cr>
 map <f4> <esc>:CtrlP<cr>
 map <f12> <esc>:CtrlPClearCache<cr>
+map <C-p> <esc>:CtrlP<cr>
 
 autocmd BufRead *.as   set filetype=actionscript
 autocmd BufRead *.inf  set filetype=dosini
@@ -327,7 +329,7 @@ if has('gui_running')
   set number
   set linespace=1
 
-  set background=light
+  set background=dark
   colorscheme solarized
 else
   set vb t_vb=
