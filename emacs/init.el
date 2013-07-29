@@ -10,6 +10,10 @@
 (require 'php-mode)
 (require 'erlang)
 
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+(ac-config-default)
+
 (when (featurep 'aquamacs)
   (load-theme 'solarized-dark t))
 
