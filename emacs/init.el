@@ -64,6 +64,7 @@
         (cons "\\.erl$" 'erlang-mode)
         (cons "\\.h$" 'c++-mode)
         (cons "\\.tml$" 'html-mode)
+        (cons "\\.ts$" 'typescript-mode)
         )
        auto-mode-alist))
 
@@ -74,6 +75,8 @@
 (setq-default read-file-name-completion-ignore-case t)
 (setq-default require-final-newline t)
 (setq-default write-region-inhibit-fsync t)
+
+(autoload 'typescript-mode "TypeScript" "TS!" t)
 
 (require 'mouse)
 (xterm-mouse-mode t)
