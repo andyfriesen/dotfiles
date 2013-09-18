@@ -155,31 +155,6 @@
    '(default ((t (:height 80 :family "Inconsolata")))))
   )
 
-(defun change-to-cabal-directory ()
-  (message "change-to-cabal-directory")
-  (if (buffer-file-name)
-      (change-to-cabal-directory-from-directory (file-name-directory buffer-file-name))))
-
-(defun change-to-cabal-directory-from-directory (directory) 
-  (if (file-accessible-directory-p directory)
-      (if (find-cabal-files directory)
-          (cd directory)
-
-        (let ((parent-directory (file-name-directory
-                                 (directory-file-name directory))))
-          (unless (string= parent-directory directory)
-            (change-to-cabal-directory-from-directory
-             parent-directory))))))
-
-(defun find-cabal-files (directory)
-  (let ((file-list (directory-files directory)))
-    (delq nil
-          (mapcar (lambda (file) 
-                    (if (> (length file) 6)
-                        (string= (substring file (- 0 6)) ".cabal")
-                      nil)) 
-                  file-list))))
-
 (require 'haskell-style)
 (add-hook 'haskell-mode-hook 'haskell-style)
 
@@ -188,7 +163,6 @@
 ;; This should replace the call to add-hook from the ghc-mod instructions:
 (add-hook 'haskell-mode-hook (lambda ()
                                (ghc-init)
-                               (change-to-cabal-directory)
                                (flymake-mode)
                                (turn-on-haskell-indent)
                                (flymake-mode t)
