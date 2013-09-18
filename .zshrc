@@ -7,7 +7,7 @@ export LSCOLORS="ex"
 autoload -U colors && colors
 
 SSH_ENV="$HOME/.ssh/environment"
-SCRIPT_SOURCE=${$(readlink -f ~/.zshrc):h}
+SCRIPT_SOURCE=${0:h}
 
 function start_agent {
      echo "Initialising new SSH agent..."
