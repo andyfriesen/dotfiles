@@ -132,6 +132,7 @@ map <f3> <esc>:CtrlPBuffer<cr>
 map <f4> <esc>:CtrlP<cr>
 map <f12> <esc>:CtrlPClearCache<cr>
 map <C-p> <esc>:CtrlP<cr>
+map <C-r> <esc>:CtrlPClearCache<cr>
 
 autocmd BufRead *.as   set filetype=actionscript
 autocmd BufRead *.inf  set filetype=dosini

@@ -67,7 +67,7 @@
         (cons "\\.mm$" 'objc-mode)
         (cons "\\.erl$" 'erlang-mode)
         (cons "\\.h$" 'c++-mode)
-        (cons "\\.tml$" 'html-mode)
+        (cons "\\.tml$" 'php-mode)
         (cons "\\.ts$" 'typescript-mode)
         )
        auto-mode-alist))
