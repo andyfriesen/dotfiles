@@ -131,7 +131,7 @@
 
 (load "haskell-site-file")
 
-(autoload 'ghc-init "ghc" nil t)
+; (autoload 'ghc-init "ghc" nil t)
 
 ;;(add-hook 'haskell-mode-hook (lambda ()
 ;;                               (local-set-key (kbd "C-c C-t") 'ghc-show-type)
@@ -156,17 +156,19 @@
   )
 
 (require 'haskell-style)
-(add-hook 'haskell-mode-hook 'haskell-style)
 
 ;; From the ghc-mod instructions
-;(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-init "ghc" nil t)
+
 ;; This should replace the call to add-hook from the ghc-mod instructions:
 (add-hook 'haskell-mode-hook (lambda ()
                                (ghc-init)
                                (flymake-mode)
                                (turn-on-haskell-indent)
                                (flymake-mode t)
-                               (local-set-key [M-t] 'ghc-insert-template)))
+                               (local-set-key [M-t] 'ghc-insert-template)
+                               (haskell-style)
+                               ))
 
 (add-to-list 'completion-ignored-extensions ".hi")
 

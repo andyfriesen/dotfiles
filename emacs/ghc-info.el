@@ -12,12 +12,19 @@
 
 (defun ghc-show-info (&optional ask)
   (interactive "P")
-  (let* ((modname (or (ghc-find-module-name) "Main"))
-	 (expr0 (ghc-things-at-point))
+  (let* ((expr0 (ghc-things-at-point))
 	 (expr (if (or ask (not expr0)) (ghc-read-expression expr0) expr0))
+	 (info (ghc-get-info expr)))
+    (when info
+      (ghc-display
+       nil
+       (lambda () (insert info))))))
+
+(defun ghc-get-info (expr)
+  (let* ((modname (or (ghc-find-module-name) "Main"))
 	 (file (buffer-file-name))
 	 (cmds (list "info" file modname expr)))
-    (ghc-display-information cmds nil)))
+    (ghc-run-ghc-mod cmds)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -102,34 +109,13 @@
     (ghc-type-set-ix 0))
   (ghc-type-get-types))
 
-(defun ghc-strip-common-prefix (b s)
-  (cond ((null s) b)
-        ((string= (car b) (car s)) (ghc-strip-common-prefix (cdr b) (cdr s)))
-        (t b)))
-
-(defun ghc-guess-project-root (filename modname)
-  (let* ((not-emptyp     (lambda (s) (/= 0 (length s))))
-         (path-parts     (butlast (split-string (file-name-directory filename) "/") 1))
-
-         (module-dirs    (reverse path-parts))
-         (module-package (reverse (butlast (split-string modname "\\.") 1)))
-
-         (common-prefix  (reverse (ghc-strip-common-prefix module-dirs module-package))))
-
-    (message filename)
-    (concat (mapconcat 'identity common-prefix "/") "/")))
-
-;;
 (defun ghc-type-obtain-tinfos (modname)
   (let* ((ln (int-to-string (line-number-at-pos)))
 	 (cn (int-to-string (current-column)))
-	 (cdir2 default-directory)
-	 (file (buffer-file-name))
-         (cdir (ghc-guess-project-root file modname)))
+	 (cdir default-directory)
+	 (file (buffer-file-name)))
     (ghc-read-lisp
      (lambda ()
-       (print cdir)
-       (print cdir2)
        (cd cdir)
        (apply 'call-process ghc-module-command nil t nil
 	      `(,@(ghc-make-ghc-options) "-l" "type" ,file ,modname ,ln ,cn))
@@ -145,27 +131,12 @@
 (defun ghc-expand-th ()
   (interactive)
   (let* ((file (buffer-file-name))
-	 (cmds (list "expand" file)))
-    (ghc-display-information cmds t)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Display
-;;;
-
-(defun ghc-display-information (cmds fontify)
-  (interactive)
-  (if (not (executable-find ghc-module-command))
-      (message "%s not found" ghc-module-command)
-    (ghc-display
-     fontify
-     (lambda (cdir)
-       (insert
-	(with-temp-buffer
-	  (cd cdir)
-	  (apply 'call-process ghc-module-command nil t nil
-		 (append (ghc-make-ghc-options) cmds))
-	  (buffer-substring (point-min) (1- (point-max)))))))))
+	 (cmds (list "expand" file))
+	 (source (ghc-run-ghc-mod cmds)))
+    (when source
+      (ghc-display
+       'fontify
+       (lambda () (insert source))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
