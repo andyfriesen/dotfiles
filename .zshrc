@@ -4,6 +4,9 @@ alias grep='grep --color=auto'
 export PATH=$PATH:/opt/local/bin:~/.cabal/bin
 export LSCOLORS="ex"
 
+#autoload -U compinit && compinit
+#zstyle ':completion:*' menu select
+
 autoload -U colors && colors
 
 SSH_ENV="$HOME/.ssh/environment"
@@ -44,7 +47,10 @@ case $OSTYPE in
 
     darwin*)
         export PROMPT="%{$fg[green]%}%~%{$fg[yellow]%}%# %{$reset_color%}"
-        export PATH=/opt/local/bin:$PATH:~/Library/Haskell/bin
+        export PATH=/opt/local/bin:$PATH
+        if [ -d ~/Library/Haskell/bin ]; then
+            export PATH=~/Library/Haskell/bin:$PATH
+        fi
         alias sandbox='ssh -A cit@localhost.imvu.com'
         ;;
 esac
