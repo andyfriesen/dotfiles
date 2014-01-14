@@ -4,10 +4,13 @@
 (add-to-list 'load-path config-root)
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "haskell-mode"))
-(add-to-list 'custom-theme-load-path (concat config-root "themes"))
+
+(when (<= 24 emacs-major-version)
+    (add-to-list 'custom-theme-load-path (concat config-root "themes")))
 
 (require 'flymake-cursor)
 (require 'php-mode)
+(require 'lua-mode)
 (require 'erlang)
 
 (require 'auto-complete-config)
@@ -15,7 +18,9 @@
 (ac-config-default)
 
 (when (featurep 'aquamacs)
-  (load-theme 'solarized-dark t))
+  (one-buffer-one-frame-mode 0)
+  ;(load-theme 'solarized-dark t)
+  (global-set-key (kbd "A-r") 'revert-buffer))
 
 ;(defun w32-maximize-frame ()
 ;  "Maximize the current frame"
@@ -45,6 +50,9 @@
 (global-set-key [C-up] 'scroll-one-line-up)
 (global-set-key [C-down] 'scroll-one-line-down)
 
+(global-set-key [C-next] 'next-buffer)
+(global-set-key [C-prior] 'previous-buffer)
+
 (defun my-c-mode-common-hook ()
     (setq
         tab-width 8
@@ -57,8 +65,6 @@
 (setq auto-mode-alist
       (append
        (list
-        ;(cons "\\.as$" 'ecmascript-mode)
-        ;(cons "\\.js$" 'ecmascript-mode)
         (cons "\\.as$" 'javascript-mode)
         (cons "\\.scons$" 'python-mode)
         (cons "SConstruct" 'python-mode)
@@ -69,6 +75,7 @@
         (cons "\\.h$" 'c++-mode)
         (cons "\\.tml$" 'php-mode)
         (cons "\\.ts$" 'typescript-mode)
+        (cons "\\.scss$" 'css-mode)
         )
        auto-mode-alist))
 
@@ -79,14 +86,14 @@
 (setq-default read-file-name-completion-ignore-case t)
 (setq-default require-final-newline t)
 (setq-default write-region-inhibit-fsync t)
+(setq make-backup-files nil)
 
 (autoload 'typescript-mode "TypeScript" "TS!" t)
 
-(require 'mouse)
-(xterm-mouse-mode t)
-(setq mouse-sel-mode t)
-
 (unless (featurep 'aquamacs)
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (setq mouse-sel-mode t)
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
@@ -109,6 +116,14 @@
    '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
    '(region ((t (:background "brightwhite"))))))
 
+(add-hook 'php-mode-hook
+          (lambda ()   
+            (php-enable-symfony2-coding-style)))
+
+(add-hook 'python-mode-hook
+          (lambda()
+            (local-set-key (kbd "RET") 'newline-and-indent)))
+
 (setq-default c-indent-tabs-mode t     ; Pressing TAB should cause indentation
               c-indent-level 4         ; A TAB is equivilent to four spaces
               c-argdecl-indent 0       ; Do not indent argument decl's extra
@@ -127,7 +142,7 @@
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-hook 'my-c-mode-hook)
-(add-hook 'ecmascript-mode-hook 'my-c-mode-hook)
+(transient-mark-mode t)
 
 (load "haskell-site-file")
 
@@ -146,9 +161,6 @@
  '(haskell-indent-thenelse 1)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-tags-on-save t))
-
-;(require 'speedbar)
-;(speedbar-add-supported-extension ".hs")
 
 (when (display-graphic-p)
   (custom-set-faces
