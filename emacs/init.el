@@ -3,6 +3,7 @@
 
 (add-to-list 'load-path config-root)
 (add-to-list 'load-path (concat config-root "site-lisp"))
+(add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
 (add-to-list 'load-path (concat config-root "haskell-mode"))
 
 (when (<= 24 emacs-major-version)
@@ -40,13 +41,6 @@
   (interactive "p")
   (scroll-down (or arg 1)))
 
-; FIXME: Doesn't work. :(
-;(defun show-window-menu (&optional arg)
-;  "Stuff"
-;  (interactive)
-;  (w32-send-sys-command #xF100))
-;(global-set-key [M-space] 'show-window-menu)
-
 (global-set-key [C-up] 'scroll-one-line-up)
 (global-set-key [C-down] 'scroll-one-line-down)
 
@@ -76,6 +70,7 @@
         (cons "\\.tml$" 'php-mode)
         (cons "\\.ts$" 'typescript-mode)
         (cons "\\.scss$" 'css-mode)
+        (cons "\\.elm$" 'haskell-mode) ; Temp hack.  Should be good enough.
         )
        auto-mode-alist))
 
@@ -195,3 +190,13 @@
       (when (and (buffer-file-name) (file-exists-p (buffer-file-name)) (not (buffer-modified-p)))
         (revert-buffer t t t) )))
   (message "Refreshed open files.") )
+
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+(autoload 'tuareg-imenu-set-imenu "tuareg-imenu" 
+  "Configuration of imenu for tuareg" t) 
+(add-hook 'tuareg-mode-hook 'tuareg-imenu-set-imenu)
+(setq auto-mode-alist 
+      (append '(("\\.ml[ily]?$" . tuareg-mode)
+                ("\\.topml$" . tuareg-mode))
+              auto-mode-alist))
