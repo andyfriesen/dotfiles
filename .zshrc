@@ -40,7 +40,7 @@ case $OSTYPE in
         ;;
 
     linux*)
-        export PROMPT="%{$fg[red]%}%m %{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
+        export PROMPT="%{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
         eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
         alias ls='ls --color'
         ;;
@@ -54,6 +54,10 @@ case $OSTYPE in
         alias sandbox='ssh -A cit@localhost.imvu.com'
         ;;
 esac
+
+if [ -n "$SSH_CLIENT" ]; then
+    export PROMPT="%{$fg[red]%}%m $PROMPT"
+fi
 
 function ghc-pkg-clean() {
     for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
