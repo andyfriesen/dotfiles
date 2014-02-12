@@ -4,6 +4,7 @@
 (add-to-list 'load-path config-root)
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
+(add-to-list 'load-path (concat config-root "ghc-mod"))
 (add-to-list 'load-path (concat config-root "haskell-mode"))
 
 (when (<= 24 emacs-major-version)
