@@ -1,0 +1,24 @@
+'editor':
+  'fontSize': 10
+  'tabLength': 4
+  'preferredLineLength': 120
+'core':
+  'themes': [
+    'atom-dark-ui'
+    'base16-tomorrow-dark-theme'
+  ]
+  'ignoredNames': [
+    '.git'
+    '.svn'
+    '.DS_Store'
+  ]
+'exception-reporting':
+  'userId': '30bc99e8-4e83-edb6-1d92-fac501bd9541'
+'release-notes':
+  'viewedVersion': '0.70.0'
+'welcome':
+  'showOnStartup': false
+'metrics':
+  'userId': '7c74459fbca227dbfeaa2d4f7a9d310f716e6042'
+'feedback':
+  'email': 'andy.friesen@gmail.com'
