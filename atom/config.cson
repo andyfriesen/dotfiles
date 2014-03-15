@@ -2,6 +2,7 @@
   'fontSize': 10
   'tabLength': 4
   'preferredLineLength': 120
+  'includeCompletionsFromAllBuffers': true
 'core':
   'themes': [
     'atom-dark-ui'
