@@ -13,6 +13,7 @@
 (require 'flymake-cursor)
 (require 'php-mode)
 (require 'lua-mode)
+(require 'rust-mode)
 (require 'erlang)
 
 (require 'auto-complete-config)
