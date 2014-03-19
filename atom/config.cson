@@ -1,8 +1,8 @@
 'editor':
-  'fontSize': 10
   'tabLength': 4
   'preferredLineLength': 120
   'includeCompletionsFromAllBuffers': true
+  'fontSize': 10
 'core':
   'themes': [
     'atom-dark-ui'
@@ -16,7 +16,7 @@
 'exception-reporting':
   'userId': '30bc99e8-4e83-edb6-1d92-fac501bd9541'
 'release-notes':
-  'viewedVersion': '0.70.0'
+  'viewedVersion': '0.73.0'
 'welcome':
   'showOnStartup': false
 'metrics':

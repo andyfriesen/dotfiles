@@ -19,5 +19,7 @@
 
 'body':
     'ctrl-x ctrl-s': 'core:save'
+    'ctrl-x o': 'window:focus-next-pane'
     'ctrl-home': 'core:move-to-top'
     'ctrl-end': 'core:move-to-bottom'
+    'alt-/': 'autocomplete:toggle'
