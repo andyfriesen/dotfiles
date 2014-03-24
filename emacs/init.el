@@ -16,6 +16,8 @@
 (require 'rust-mode)
 (require 'erlang)
 
+(require 'column-marker)
+
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (ac-config-default)
@@ -115,10 +117,12 @@
 
 (add-hook 'php-mode-hook
           (lambda ()   
+            (column-marker-1 120)
             (php-enable-symfony2-coding-style)))
 
 (add-hook 'python-mode-hook
           (lambda()
+            (column-marker-1 120)
             (local-set-key (kbd "RET") 'newline-and-indent)))
 
 (setq-default c-indent-tabs-mode t     ; Pressing TAB should cause indentation
@@ -135,7 +139,8 @@
   (c-set-offset 'inline-open '+)
   (c-set-offset 'block-open '+)
   (c-set-offset 'brace-list-open '+)   ; all "opens" should be indented by the c-indent-level
-  (c-set-offset 'case-label '+))       ; indent case labels by c-indent-level, too
+  (c-set-offset 'case-label '+)        ; indent case labels by c-indent-level, too
+  (column-marker-1 120))
 
 (add-hook 'c-mode-hook 'my-c-mode-hook)
 (add-hook 'c++-mode-hook 'my-c-mode-hook)
@@ -180,12 +185,12 @@
 
 ;; This should replace the call to add-hook from the ghc-mod instructions:
 (add-hook 'haskell-mode-hook (lambda ()
-                               (ghc-init)
-                               (flymake-mode)
+                               ;(ghc-init)
                                (turn-on-haskell-indent)
-                               (flymake-mode t)
-                               (local-set-key [M-t] 'ghc-insert-template)
+                               ;(flymake-mode t)
+                               ;(local-set-key [M-t] 'ghc-insert-template)
                                (haskell-style)
+                               (column-marker-1 120)
                                ))
 
 (add-to-list 'completion-ignored-extensions ".hi")
