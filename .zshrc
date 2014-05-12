@@ -43,6 +43,7 @@ case $OSTYPE in
         export PROMPT="%{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
         eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
         alias ls='ls --color'
+        alias emacs='emacs -nw'
         ;;
 
     darwin*)
