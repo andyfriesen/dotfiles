@@ -1,0 +1,18 @@
+[color]
+	diff = auto
+	branch = auto
+	interactive = auto
+	status = auto
+[user]
+	name = Andy Friesen
+	email = andy@imvu.com
+[merge]
+	tool = opendiff
+#[mergetool "tortoisemerge"]
+#	cmd = /cygdrive/e/Program
+#[mergetool "opendiff"]
+#	cmd = opendiff
+[core]
+	editor = emacs
+[push]
+	default = simple
