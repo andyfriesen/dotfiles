@@ -65,6 +65,7 @@
        (list
         (cons "\\.as$" 'javascript-mode)
         (cons "\\.scons$" 'python-mode)
+        (cons "\\.tac$" 'python-mode)
         (cons "SConstruct" 'python-mode)
         (cons "SConscript" 'python-mode)
         (cons "\\.php$" 'php-mode)
@@ -154,10 +155,10 @@
 ;;                               (local-set-key (kbd "C-c C-t") 'ghc-show-type)
 ;;                               ))
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
  '(haskell-indent-thenelse 1)
