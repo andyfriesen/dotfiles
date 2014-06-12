@@ -186,41 +186,36 @@
                 ("\\.topml$" . tuareg-mode))
               auto-mode-alist))
 
-(unless (featurep 'aquamacs)
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (setq mouse-sel-mode t)
+(cond
+ ((featurep 'aquamacs)
   (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "unknown" :family "Fira Mono"))))
-   '(diff-added ((t (:inherit diff-changed :foreground "green"))))
-   '(diff-context ((t (:inherit shadow :foreground "brightblue"))))
-   '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
-   '(dired-ignored ((t (:inherit shadow :foreground "brightgreen"))))
-   '(flymake-errline ((t (:foreground "brightred" :underline "red"))))
-   '(flymake-warnline ((t (:foreground "magenta" :underline "yellow"))))
-   '(font-lock-builtin-face ((t (:foreground "brightmagenta"))))
-   '(font-lock-comment-face ((t (:foreground "brightgreen"))))
-   '(font-lock-function-name-face ((t (:foreground "blue"))))
-   '(font-lock-keyword-face ((t (:foreground "green"))))
-   '(font-lock-string-face ((t (:foreground "cyan"))))
-   '(font-lock-type-face ((t (:foreground "yellow"))))
-   '(font-lock-variable-name-face ((t (:foreground "blue"))))
-   '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
-   '(region ((t (:background "brightwhite")))))
-   '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
-   '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
-   '(haskell-indent-thenelse 1)
-   '(haskell-process-suggest-remove-import-lines t)
-   '(haskell-tags-on-save t))
-
-(when (featurep 'aquamacs)
+    '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))))
+ ((display-graphic-p)
   (custom-set-faces
-    '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
-    '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
-    '(haskell-indent-thenelse 1)
-    '(haskell-process-suggest-remove-import-lines t)
-    '(haskell-tags-on-save t)))
+   '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#eee5d5" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "unknown" :family "Fira Mono"))))))
+ (t
+  (progn
+   (require 'mouse)
+   (xterm-mouse-mode t)
+   (setq mouse-sel-mode t)
+   (custom-set-faces
+    ;; custom-set-faces was added by Custom.
+    ;; If you edit it by hand, you could mess it up, so be careful.
+    ;; Your init file should contain only one such instance.
+    ;; If there is more than one, they won't work right.
+    '(diff-added ((t (:inherit diff-changed :foreground "green"))))
+    '(diff-context ((t (:inherit shadow :foreground "brightblue"))))
+    '(diff-removed ((t (:inherit diff-changed :foreground "red"))))
+    '(dired-ignored ((t (:inherit shadow :foreground "brightgreen"))))
+    '(flymake-errline ((t (:foreground "brightred" :underline "red"))))
+    '(flymake-warnline ((t (:foreground "magenta" :underline "yellow"))))
+    '(font-lock-builtin-face ((t (:foreground "brightmagenta"))))
+    '(font-lock-comment-face ((t (:foreground "brightgreen"))))
+    '(font-lock-function-name-face ((t (:foreground "blue"))))
+    '(font-lock-keyword-face ((t (:foreground "green"))))
+    '(font-lock-string-face ((t (:foreground "cyan"))))
+    '(font-lock-type-face ((t (:foreground "yellow"))))
+    '(font-lock-variable-name-face ((t (:foreground "blue"))))
+    '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
+    '(region ((t (:background "gray"))))
+    '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))))))
