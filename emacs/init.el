@@ -137,7 +137,8 @@
  '(haskell-indent-after-keywords (quote (("where" 2 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
  '(haskell-indent-thenelse 1)
  '(haskell-process-suggest-remove-import-lines t)
- '(haskell-tags-on-save t))
+ '(haskell-tags-on-save t)
+ '(tool-bar-mode nil))
 
 (require 'haskell-style)
 
@@ -191,8 +192,12 @@
   (custom-set-faces
     '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))))
  ((display-graphic-p)
-  (custom-set-faces
-   '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#eee5d5" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "unknown" :family "Fira Mono"))))))
+  (progn
+    (tool-bar-mode -1)
+    (set-scroll-bar-mode 'right)
+    (custom-set-faces
+     '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#eee5d5" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Fira Mono"))))
+     '(cursor ((t (:background "white")))))))
  (t
   (progn
    (require 'mouse)
