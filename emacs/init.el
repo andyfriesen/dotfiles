@@ -197,7 +197,8 @@
     (set-scroll-bar-mode 'right)
     (custom-set-faces
      '(default ((t (:inherit nil :stipple nil :background "#002b36" :foreground "#eee5d5" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Fira Mono"))))
-     '(cursor ((t (:background "white")))))))
+     '(cursor ((t (:background "white")))))
+    (set-face-attribute 'default nil :font "Fira Mono-10")))
  (t
   (progn
    (require 'mouse)
