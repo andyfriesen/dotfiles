@@ -25,6 +25,8 @@ case $OSTYPE in
     cygwin*)
         export PROMPT="%{$fg[green]%}%~%{$fg[yellow]%}%# %{$reset_color%}"
         export TERM=xterm-256color
+        alias ls='ls --color'
+        eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
 
         # Source SSH settings, if applicable
         if [ -f "${SSH_ENV}" ]; then
