@@ -13,6 +13,8 @@
 #[mergetool "opendiff"]
 #	cmd = opendiff
 [core]
-	editor = emacs
+	editor = emacs -nw
 [push]
 	default = simple
+#[format]
+#	pretty = format:%h  %Cgreen %ae %Creset  %ar  %Cred %s %Creset

@@ -1,7 +1,6 @@
 
 (setq config-root (file-name-directory load-file-name))
 
-(add-to-list 'load-path config-root)
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
 (add-to-list 'load-path (concat config-root "ghc-mod"))
@@ -225,3 +224,8 @@
     '(minibuffer-prompt ((t (:foreground "blue" :weight bold))))
     '(region ((t (:background "gray"))))
     '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))))))
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://stable.melpa.org/packages/"))
+(package-initialize)

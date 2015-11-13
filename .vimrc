@@ -52,14 +52,17 @@ Bundle 'eagletmt/ghcmod-vim'
 Bundle 'lukerandall/haskellmode-vim'
 Bundle 'ujihisa/neco-ghc'
 
-Bundle 'kongo2002/fsharp-vim'
+" Bundle 'kongo2002/fsharp-vim'
 Bundle 'oscarh/vimerl'
-Bundle 'proyvind/Cpp11-Syntax-Support'
+" Bundle 'proyvind/Cpp11-Syntax-Support'
 Bundle 'tpope/vim-markdown'
 Bundle 'vim-scripts/JSON.vim'
 Bundle 'vim-scripts/nginx.vim'
 Bundle 'proyvind/Cpp11-Syntax-Support'
 Bundle 'vim-scripts/e2.lua'
+
+Bundle 'derekwyatt/vim-scala'
+au BufRead,BufNewFile *.scala set filetype=scala
 
 let g:ignored_dirs = '\v'
                  \ . '\.(hg|git|bzr|svn)$|_darcs'
@@ -160,7 +163,7 @@ set showmode
 set wildmenu
 set wildmode=longest,list,full
 
-call VsnCmd(703, 'set colorcolumn=81')
+call VsnCmd(703, 'set colorcolumn=121')
 set cursorline
 set modeline
 
@@ -337,7 +340,8 @@ else
   set t_Co=256
   set cpo-=C
 
-  colorscheme wombat256
+  " colorscheme wombat256
+  colorscheme delek
 endif
 
 if filereadable(expand("~/.vim/local.vim"))

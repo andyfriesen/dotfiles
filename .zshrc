@@ -73,6 +73,8 @@ function ghc-pkg-clean() {
 #autoload -U zstyle+
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
+setopt -o sharehistory
+
 alias update='~/ntp && s/update'
 
 export HISTSIZE=1000
