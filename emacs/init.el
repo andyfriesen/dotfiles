@@ -3,7 +3,7 @@
 
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
-(add-to-list 'load-path (concat config-root "ghc-mod"))
+;(add-to-list 'load-path (concat config-root "ghc-mod"))
 (add-to-list 'load-path (concat config-root "haskell-mode"))
 
 (when (<= 24 emacs-major-version)
@@ -151,14 +151,13 @@
     (message "Refreshed open files.") )
 
 ;; From the ghc-mod instructions
-(autoload 'ghc-init "ghc" nil t)
+; (autoload 'ghc-init "ghc" nil t)
 
 ;; This should replace the call to add-hook from the ghc-mod instructions:
 (add-hook 'haskell-mode-hook (lambda ()
                                ;(ghc-init)
-                               (turn-on-haskell-indent)
                                ;(flymake-mode t)
-                               ;(local-set-key [M-t] 'ghc-insert-template)
+                               (local-set-key [M-t] 'ghc-insert-template)
                                (haskell-style)
                                (column-marker-1 120)
                                ))

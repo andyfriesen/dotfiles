@@ -9,15 +9,22 @@
 ;;; Code:
 
 (require 'ghc-func)
+(require 'ghc-process)
 
 (defun ghc-show-info (&optional ask)
   (interactive "P")
-  (let* ((modname (or (ghc-find-module-name) "Main"))
-	 (expr0 (ghc-things-at-point))
+  (let* ((expr0 (ghc-things-at-point))
 	 (expr (if (or ask (not expr0)) (ghc-read-expression expr0) expr0))
-	 (file (buffer-file-name))
-	 (cmds (list "info" file modname expr)))
-    (ghc-display-information cmds nil)))
+	 (info (ghc-get-info expr)))
+    (when info
+      (ghc-display
+       nil
+       (lambda () (insert info))))))
+
+(defun ghc-get-info (expr)
+  (let* ((file (buffer-file-name))
+	 (cmd (format "info %s %s\n" file expr)))
+    (ghc-sync-process cmd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -56,7 +63,7 @@
 	(cons 'ghc-type-clear-overlay after-change-functions))
   (add-hook 'post-command-hook 'ghc-type-post-command-hook))
 
-(defun ghc-type-clear-overlay (&optional beg end len)
+(defun ghc-type-clear-overlay (&optional _beg _end _len)
   (when (overlayp ghc-type-overlay)
     (ghc-type-set-ix 0)
     (ghc-type-set-point 0)
@@ -70,18 +77,12 @@
 
 (defun ghc-show-type ()
   (interactive)
-  (if (not (executable-find ghc-module-command))
-      (message "%s not found" ghc-module-command)
-    (let ((modname (or (ghc-find-module-name) "Main")))
-      (ghc-show-type0 modname))))
-
-(defun ghc-show-type0 (modname)
-  (let* ((buf (current-buffer))
-	 (tinfos (ghc-type-get-tinfos modname)))
+  (let ((buf (current-buffer))
+	(tinfos (ghc-type-get-tinfos)))
     (if (null tinfos)
 	(progn
 	  (ghc-type-clear-overlay)
-	  (message "Cannot guess type"))
+	  (message "Cannot determine type"))
       (let* ((tinfo (nth (ghc-type-get-ix) tinfos))
 	     (type (ghc-tinfo-get-info tinfo))
 	     (beg-line (ghc-tinfo-get-beg-line tinfo))
@@ -93,49 +94,30 @@
 	(move-overlay ghc-type-overlay (- left 1) (- right 1) buf)
 	(message type)))))
 
-(defun ghc-type-get-tinfos (modname)
+(defun ghc-type-get-tinfos ()
   (if (= (ghc-type-get-point) (point))
       (ghc-type-set-ix
        (mod (1+ (ghc-type-get-ix)) (length (ghc-type-get-types))))
-    (ghc-type-set-types (ghc-type-obtain-tinfos modname))
-    (ghc-type-set-point (point))
-    (ghc-type-set-ix 0))
+    (let ((types (ghc-type-obtain-tinfos)))
+      (if (not (listp types)) ;; main does not exist in Main
+	  (ghc-type-set-types nil)
+	(ghc-type-set-types types)
+	(ghc-type-set-point (point))
+	(ghc-type-set-ix 0))))
   (ghc-type-get-types))
 
-(defun ghc-strip-common-prefix (b s)
-  (cond ((null s) b)
-        ((string= (car b) (car s)) (ghc-strip-common-prefix (cdr b) (cdr s)))
-        (t b)))
-
-(defun ghc-guess-project-root (filename modname)
-  (let* ((not-emptyp     (lambda (s) (/= 0 (length s))))
-         (path-parts     (butlast (split-string (file-name-directory filename) "/") 1))
-
-         (module-dirs    (reverse path-parts))
-         (module-package (reverse (butlast (split-string modname "\\.") 1)))
-
-         (common-prefix  (reverse (ghc-strip-common-prefix module-dirs module-package))))
-
-    (message filename)
-    (concat (mapconcat 'identity common-prefix "/") "/")))
-
-;;
-(defun ghc-type-obtain-tinfos (modname)
+(defun ghc-type-obtain-tinfos ()
   (let* ((ln (int-to-string (line-number-at-pos)))
-	 (cn (int-to-string (current-column)))
-	 (cdir2 default-directory)
+	 (cn (int-to-string (1+ (current-column))))
 	 (file (buffer-file-name))
-         (cdir (ghc-guess-project-root file modname)))
-    (ghc-read-lisp
-     (lambda ()
-       (print cdir)
-       (print cdir2)
-       (cd cdir)
-       (apply 'call-process ghc-module-command nil t nil
-	      `(,@(ghc-make-ghc-options) "-l" "type" ,file ,modname ,ln ,cn))
-       (goto-char (point-min))
-       (while (search-forward "[Char]" nil t)
-	 (replace-match "String"))))))
+	 (cmd (format "type %s %s %s\n" file ln cn)))
+    (ghc-sync-process cmd nil 'ghc-type-fix-string)))
+
+(defun ghc-type-fix-string ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward "[Char]" nil t)
+      (replace-match "String"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -145,27 +127,12 @@
 (defun ghc-expand-th ()
   (interactive)
   (let* ((file (buffer-file-name))
-	 (cmds (list "expand" file)))
-    (ghc-display-information cmds t)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Display
-;;;
-
-(defun ghc-display-information (cmds fontify)
-  (interactive)
-  (if (not (executable-find ghc-module-command))
-      (message "%s not found" ghc-module-command)
-    (ghc-display
-     fontify
-     (lambda (cdir)
-       (insert
-	(with-temp-buffer
-	  (cd cdir)
-	  (apply 'call-process ghc-module-command nil t nil
-		 (append (ghc-make-ghc-options) cmds))
-	  (buffer-substring (point-min) (1- (point-max)))))))))
+	 (cmds (list "-b" "\n" "expand" file))
+	 (source (ghc-run-ghc-mod cmds)))
+    (when source
+      (ghc-display
+       'fontify
+       (lambda () (insert source))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -175,7 +142,8 @@
 (defun ghc-get-pos (buf line col)
   (save-excursion
     (set-buffer buf)
-    (goto-line line)
+    (goto-char (point-min))
+    (forward-line (1- line))
     (forward-char col)
     (point)))
 

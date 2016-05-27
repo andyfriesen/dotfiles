@@ -18,9 +18,10 @@
 (defun ghc-replace-character (string from to)
   "Replace characters equal to FROM to TO in STRING."
   (let ((ret (copy-sequence string)))
-    (dotimes (cnt (length ret) ret)
+    (dotimes (cnt (length ret))
       (if (char-equal (aref ret cnt) from)
-	  (aset ret cnt to)))))
+	  (aset ret cnt to)))
+    ret))
 
 (defun ghc-replace-character-buffer (from-c to-c)
   (let ((from (char-to-string from-c))
@@ -29,6 +30,17 @@
       (goto-char (point-min))
       (while (search-forward from nil t)
 	(replace-match to)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun ghc-unescape-string (str)
+  (with-temp-buffer
+    (insert str)
+    (goto-char (point-min))
+    (while (search-forward "\\n" nil t) (replace-match "\n" nil t))
+    (goto-char (point-min))
+    (while (search-forward "\\\\" nil t) (replace-match "\\" nil t))
+    (buffer-substring-no-properties (point-min) (point-max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -55,7 +67,7 @@
     (dolist (lst lol)
       (dolist (key lst)
 	(puthash key key hash)))
-    (maphash (lambda (key val) (ghc-add ret key)) hash)
+    (maphash (lambda (key _val) (ghc-add ret key)) hash)
     ret))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,31 +75,31 @@
 (defun ghc-read-lisp (func)
   (with-temp-buffer
     (funcall func)
+    (ghc-read-lisp-this-buffer)))
+
+;; OK/NG are ignored.
+(defun ghc-read-lisp-this-buffer ()
+  (save-excursion
     (goto-char (point-min))
     (condition-case nil
 	(read (current-buffer))
       (error ()))))
 
-(defun ghc-read-lisp-list (func n)
-  (with-temp-buffer
-    (funcall func)
+(defun ghc-read-lisp-list-this-buffer (n)
+  (save-excursion
     (goto-char (point-min))
     (condition-case nil
 	(let ((m (set-marker (make-marker) 1 (current-buffer)))
 	      ret)
-	  (dotimes (i n (nreverse ret))
-	    (ghc-add ret (read m))))
+	  (dotimes (_i n)
+	    (ghc-add ret (read m)))
+	  (nreverse ret))
       (error ()))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun ghc-mapconcat (func list)
   (apply 'append (mapcar func list)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defconst ghc-null 0)
-(defconst ghc-newline 10)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -98,10 +110,11 @@
 
 (defun ghc-keyword-number-pair (spec)
   (let ((len (length spec)) key ret)
-    (dotimes (i len (nreverse ret))
+    (dotimes (i len)
       (setq key (intern (concat ":" (symbol-name (car spec)))))
       (setq ret (cons (cons key i) ret))
-      (setq spec (cdr spec)))))
+      (setq spec (cdr spec)))
+    (nreverse ret)))
 
 (defmacro ghc-defstruct (type &rest spec)
   `(progn
@@ -147,17 +160,102 @@
 (defconst ghc-error-buffer-name "*GHC Info*")
 
 (defun ghc-display (fontify ins-func)
-  (let ((cdir default-directory)
-	(buf (get-buffer-create ghc-error-buffer-name)))
-    (with-current-buffer buf
-      (erase-buffer)
-      (funcall ins-func cdir)
-      (ghc-replace-character-buffer ghc-null ghc-newline)
-      (goto-char (point-min))
-      (if (not fontify)
-	  (turn-off-haskell-font-lock)
-	(haskell-font-lock-defaults-create)
-	(turn-on-haskell-font-lock)))
-    (display-buffer buf)))
+  (ghc-display-with-name fontify ins-func ghc-error-buffer-name))
+
+;; (defun ghc-display (fontify ins-func)
+;;   (let ((buf ghc-error-buffer-name))
+;;     (with-output-to-temp-buffer buf
+;;       (with-current-buffer buf
+;;         (erase-buffer)
+;;         (funcall ins-func)
+;;         (goto-char (point-min))
+;;         (if (not fontify)
+;;             (turn-off-haskell-font-lock)
+;;           (haskell-font-lock-defaults-create)
+;;           (turn-on-haskell-font-lock)))
+;;       (display-buffer buf
+;;         '((display-buffer-reuse-window
+;;            display-buffer-pop-up-window))))))
+
+(defun ghc-display-with-name (fontify ins-func name)
+  (let ((buf name))
+    (with-output-to-temp-buffer buf
+      (with-current-buffer buf
+        (erase-buffer)
+        (funcall ins-func)
+        (goto-char (point-min))
+        (if (not fontify)
+            ;; turn-off-haskell-font-lock has been removed from haskell-mode
+            ;; test if the function is defined in our version
+            (if (fboundp 'turn-off-haskell-font-lock)
+                (turn-off-haskell-font-lock)
+              ;; it's not defined, fallback on font-lock-mode
+              (font-lock-mode -1))
+          (haskell-font-lock-defaults-create)
+          ;; turn-on-haskell-font-lock has been removed from haskell-mode
+          ;; test if the function is defined in our version
+          (if (fboundp 'turn-on-haskell-font-lock)
+              (turn-on-haskell-font-lock)
+            ;; it's not defined, fallback on font-lock-mode
+            (turn-on-font-lock))))
+      (display-buffer buf
+        '((display-buffer-reuse-window
+           display-buffer-pop-up-window))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun ghc-run-ghc-mod (cmds &optional prog)
+  (let ((target (or prog ghc-module-command)))
+    (ghc-executable-find target
+      (let ((cdir (or ghc-process-root  ;; ghc-mod version/debug
+		      default-directory))) ;; ghc-mod root
+	(with-temp-buffer
+	  (let ((default-directory cdir))
+	    (apply 'ghc-call-process target nil t nil
+		   (append (ghc-make-ghc-options) cmds))
+	    (buffer-substring (point-min) (1- (point-max)))))))))
+
+(defmacro ghc-executable-find (cmd &rest body)
+  ;; (declare (indent 1))
+  `(if (not (executable-find ,cmd))
+       (message "\"%s\" not found" ,cmd)
+     ,@body))
+
+(put 'ghc-executable-find 'lisp-indent-function 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar ghc-debug nil)
+
+(defvar ghc-debug-buffer "*GHC Debug*")
+
+(defmacro ghc-with-debug-buffer (&rest body)
+  `(with-current-buffer (set-buffer (get-buffer-create ghc-debug-buffer))
+     (goto-char (point-max))
+     ,@body))
+
+(defun ghc-call-process (cmd x y z &rest args)
+  (apply 'call-process cmd x y z args)
+  (when ghc-debug
+    (let ((cbuf (current-buffer)))
+      (ghc-with-debug-buffer
+       (insert (format "%% %s %s\n" cmd (mapconcat 'identity args " ")))
+       (insert-buffer-substring cbuf)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun ghc-enclose (expr)
+  (let ((case-fold-search nil))
+    (if (string-match "^[a-zA-Z0-9_]" expr)
+	expr
+      (concat "(" expr ")"))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmacro ghc-with-current-buffer (buf &rest body)
+  ;; (declare (indent 1))
+  `(if (buffer-live-p ,buf)
+       (with-current-buffer ,buf
+	 ,@body)))
 
 (provide 'ghc-func)
