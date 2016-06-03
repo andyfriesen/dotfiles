@@ -1,15 +1,26 @@
+;;; init.el --- Summary
+;;; Commentary:
+;;; Code:
 
+(defvar config-root)
 (setq config-root (file-name-directory load-file-name))
 
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
 ;(add-to-list 'load-path (concat config-root "ghc-mod"))
-(add-to-list 'load-path (concat config-root "haskell-mode"))
+;(add-to-list 'load-path (concat config-root "haskell-mode"))
 
 (when (<= 24 emacs-major-version)
     (add-to-list 'custom-theme-load-path (concat config-root "themes")))
 
-(require 'flymake-cursor)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+(package-install 'flycheck)
+(global-flycheck-mode)
+(require 'intero)
+
 (require 'php-mode)
 (require 'lua-mode)
 (require 'rust-mode)
@@ -74,7 +85,6 @@
         (cons "\\.tml$" 'php-mode)
         (cons "\\.ts$" 'typescript-mode)
         (cons "\\.scss$" 'css-mode)
-        (cons "\\.elm$" 'haskell-mode) ; Temp hack.  Should be good enough.
         )
        auto-mode-alist))
 
@@ -120,13 +130,6 @@
 (add-hook 'c++-mode-hook 'my-c-mode-hook)
 (transient-mark-mode t)
 
-(load "haskell-site-file")
-
-; (autoload 'ghc-init "ghc" nil t)
-
-;;(add-hook 'haskell-mode-hook (lambda ()
-;;                               (local-set-key (kbd "C-c C-t") 'ghc-show-type)
-;;                               ))
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -150,13 +153,8 @@
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
-;; From the ghc-mod instructions
-; (autoload 'ghc-init "ghc" nil t)
-
 ;; This should replace the call to add-hook from the ghc-mod instructions:
 (add-hook 'haskell-mode-hook (lambda ()
-                               ;(ghc-init)
-                               ;(flymake-mode t)
                                (local-set-key [M-t] 'ghc-insert-template)
                                (haskell-style)
                                (column-marker-1 120)
@@ -224,7 +222,4 @@
     '(region ((t (:background "gray"))))
     '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))))))
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://stable.melpa.org/packages/"))
-(package-initialize)
+;;; init.el ends here
