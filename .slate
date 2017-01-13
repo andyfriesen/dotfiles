@@ -1,0 +1,3 @@
+bind left:shift,alt,cmd corner top-left resize:screenSizeX/2;screenSizeY
+bind right:shift,alt,cmd corner top-right resize:screenSizeX/2;screenSizeY
+bind up:shift,alt,cmd corner top-right resize:screenSizeX;screenSizeY
