@@ -76,6 +76,7 @@ function ghc-pkg-clean() {
 setopt -o sharehistory
 
 alias update='~/ntp && s/update'
+alias json-pretty="python -m json.tool"
 
 export HISTSIZE=1000
 export SAVEHIST=1000
