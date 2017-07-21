@@ -1,9 +1,11 @@
+config defaultToCurrentScreen true
+
 bind left:shift,alt,cmd corner top-left resize:screenSizeX/2;screenSizeY
 bind right:shift,alt,cmd corner top-right resize:screenSizeX/2;screenSizeY
 bind up:shift,alt,cmd corner top-right resize:screenSizeX;screenSizeY
 
 bind f13 corner top-left resize:screenSizeX/3;screenSizeY
-bind f14 move screenSizeX/3;0 screenSizeX/3;screenSizeY
+bind f14 move screenSizeX/3+screenOriginX;screenOriginY screenSizeX/3;screenOriginY+screenSizeY
 bind f15 corner top-right resize:screenSizeX/3;screenSizeY
 
 bind f13:shift corner top-left resize:screenSizeX*2/3;screenSizeY
@@ -11,4 +13,5 @@ bind f15:shift corner top-right resize:screenSizeX*2/3;screenSizeY
 
 bind f16 corner top-left resize:screenSizeX/2;screenSizeY
 bind f17 corner top-right resize:screenSizeX/2;screenSizeY
+bind f18 throw next
 bind f19 corner top-right resize:screenSizeX;screenSizeY
