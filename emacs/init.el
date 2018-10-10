@@ -3,7 +3,7 @@
 ;;; Code:
 
 (defvar config-root)
-(setq config-root (file-name-directory load-file-name))
+(setq config-root (file-name-directory (file-truename load-file-name)))
 
 (add-to-list 'load-path (concat config-root "site-lisp"))
 (add-to-list 'load-path (concat config-root "tuareg-2.0.7"))
@@ -17,9 +17,9 @@
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
-(package-install 'flycheck)
-(global-flycheck-mode)
-(require 'intero)
+; (package-install 'flycheck)
+; (global-flycheck-mode)
+; (require 'intero)
 
 (require 'php-mode)
 (require 'lua-mode)
@@ -78,13 +78,13 @@
         (cons "\\.tac$" 'python-mode)
         (cons "SConstruct" 'python-mode)
         (cons "SConscript" 'python-mode)
-        (cons "\\.php$" 'php-mode)
         (cons "\\.mm$" 'objc-mode)
         (cons "\\.erl$" 'erlang-mode)
         (cons "\\.h$" 'c++-mode)
-        (cons "\\.tml$" 'php-mode)
         (cons "\\.ts$" 'typescript-mode)
         (cons "\\.scss$" 'css-mode)
+        (cons "\\.php$" 'php-mode)
+        (cons "\\.tml$" 'php-mode)
         )
        auto-mode-alist))
 
@@ -97,6 +97,7 @@
 (setq-default write-region-inhibit-fsync t)
 (setq make-backup-files nil)
 
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (autoload 'typescript-mode "TypeScript" "TS!" t)
 
 (add-hook 'php-mode-hook
