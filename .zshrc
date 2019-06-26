@@ -4,6 +4,8 @@ alias grep='grep --color=auto'
 export PATH=$PATH:/opt/local/bin:~/.cabal/bin
 export LSCOLORS="ex"
 
+setopt PROMPT_SUBST
+
 #autoload -U compinit && compinit
 #zstyle ':completion:*' menu select
 
@@ -60,6 +62,15 @@ esac
 if [ -n "$SSH_CLIENT" ]; then
     export PROMPT="%{$fg[red]%}%m $PROMPT"
 fi
+
+function check_last_exit_code() {
+  local LAST_EXIT_CODE=$?
+  if [[ "$LAST_EXIT_CODE" -ne 0 ]]; then
+    echo "%{$fg[red]%}-%{$fg_bold[red]%}$LAST_EXIT_CODE%{$reset_color%}%{$fg[red]%}-%{$reset_color%}"
+  fi
+}
+
+export RPROMPT='$(check_last_exit_code)'
 
 function ghc-pkg-clean() {
     for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
