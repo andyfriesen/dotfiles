@@ -23,6 +23,18 @@ function start_agent {
      /usr/bin/ssh-add;
 }
 
+function maybe_start_agent {
+    if [ -f "${SSH_ENV}" ]; then
+        . "${SSH_ENV}" > /dev/null
+        #ps ${SSH_AGENT_PID} doesn't work under cywgin
+        ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+            start_agent;
+        }
+    else
+        start_agent;
+    fi
+}
+
 case $OSTYPE in
     (cygwin|msys)*)
         export PROMPT="%{$fg[green]%}%~%{$fg[yellow]%}%# %{$reset_color%}"
@@ -30,23 +42,15 @@ case $OSTYPE in
         alias ls='ls --color'
         eval "$(dircolors -b $SCRIPT_SOURCE/dircolors.txt)"
 
-        # Source SSH settings, if applicable
-        if [ -f "${SSH_ENV}" ]; then
-             . "${SSH_ENV}" > /dev/null
-             #ps ${SSH_AGENT_PID} doesn't work under cywgin
-             ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
-                 start_agent;
-             }
-        else
-             start_agent;
-        fi
-
+	maybe_start_agent;
         ;;
 
     linux*)
         export PROMPT="%{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
         eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
         alias ls='ls --color'
+
+	(uname -a | grep Microsoft > /dev/null) && maybe_start_agent;
         ;;
 
     darwin*)
