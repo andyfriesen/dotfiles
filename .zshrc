@@ -24,6 +24,7 @@ function start_agent {
 }
 
 function maybe_start_agent {
+    # Source SSH settings, if applicable
     if [ -f "${SSH_ENV}" ]; then
         . "${SSH_ENV}" > /dev/null
         #ps ${SSH_AGENT_PID} doesn't work under cywgin
@@ -46,6 +47,11 @@ case $OSTYPE in
         ;;
 
     linux*)
+        # Start ssh-agent on WSL
+        (uname -a | grep Microsoft > /dev/null) && {
+            maybe_start_agent;
+        }
+
         export PROMPT="%{$fg[green]%}%~%{$fg[cyan]%}%# %{$reset_color%}"
         eval "$(dircolors $SCRIPT_SOURCE/dircolors.txt)"
         alias ls='ls --color'
