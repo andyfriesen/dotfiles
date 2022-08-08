@@ -3,6 +3,7 @@ export PS1=%~$\
 alias grep='grep --color=auto'
 export PATH=$PATH:/opt/local/bin:~/.cabal/bin
 export LSCOLORS="ex"
+export NINJA_STATUS="[%e %f/%t] "
 
 setopt PROMPT_SUBST
 
@@ -82,13 +83,6 @@ function check_last_exit_code() {
 
 export RPROMPT='$(check_last_exit_code)'
 
-function ghc-pkg-clean() {
-    for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
-    do
-        echo unregistering $p; ghc-pkg $* unregister $p
-    done
-}
-
 #autoload -U compinit
 #compinit -C
 #autoload -U zstyle+
@@ -96,7 +90,6 @@ function ghc-pkg-clean() {
 
 setopt -o sharehistory
 
-alias update='~/ntp && s/update'
 alias json-pretty="python -m json.tool"
 
 export HISTSIZE=1000
