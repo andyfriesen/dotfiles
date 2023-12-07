@@ -66,7 +66,6 @@ case $OSTYPE in
         if [ -d ~/Library/Haskell/bin ]; then
             export PATH=~/Library/Haskell/bin:$PATH
         fi
-        alias sandbox='ssh -A cit@localhost.imvu.com'
         ;;
 esac
 
